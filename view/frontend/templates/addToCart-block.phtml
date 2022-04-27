@@ -1,0 +1,29 @@
+<?php
+use Magento\Framework\App\Action\Action;
+
+/** @var \Webidea24\WidgetProductAddToCart\Block\Widget\ProductAddToCart $block */
+$product = $block->getProduct();
+?>
+
+<div class="product-addToCart-block">
+    <?php $postParams = $block->getAddToCartPostParams($product); ?>
+    <form data-role="tocart-form" data-product-sku="<?= $block->escapeHtml($product->getSku()) ?>" action="<?= /* @NoEscape */ $postParams['action'] ?>" method="post">
+        <input type="hidden" name="product" value="<?= /* @escapeNotVerified */ $postParams['data']['product'] ?>">
+        <input type="hidden" name="<?= /* @escapeNotVerified */ Action::PARAM_NAME_URL_ENCODED ?>" value="<?= /* @escapeNotVerified */ $postParams['data'][Action::PARAM_NAME_URL_ENCODED] ?>">
+        <?= $block->getBlockHtml('formkey') ?>
+        <?= $block->getLayout()->createBlock(\Webidea24\WidgetProductAddToCart\Block\ProductView::class)
+            ->setTemplate('Magento_Catalog::product/view/addtocart.phtml')
+            ->setProduct($product)
+            ->toHtml() ?>
+    </form>
+</div>
+
+<script type="text/x-magento-init">
+    {
+        "[data-role=tocart-form][data-product-sku=\"<?= $product->getSku() ?>\"]": {
+            "catalogAddToCart": {
+                "product_sku": "<?= /* @NoEscape */ $product->getSku() ?>"
+            }
+        }
+    }
+</script>
